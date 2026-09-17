@@ -1,0 +1,11 @@
+Question No.,Question,Option A,Option B,Option C,Option D,Correct Answer
+1,What is the capital city of India?,Mumbai,New Delhi,Kolkata,Chennai,B
+2,Which planet in our solar system is known as the Red Planet?,Venus,Mars,Jupiter,Saturn,B
+3,What does HTML stand for in web development?,Hyper Text Markup Language,High Text Machine Language,Hyper Tabular Markup Language,None of these,A
+4,"Which data structure follows the Last-In, First-Out (LIFO) principle?",Queue,Binary Tree,Stack,Linked List,C
+5,"In Flutter, which widget is immutable and does not require mutable state?",StatefulWidget,StatelessWidget,InheritedWidget,StreamBuilder,B
+6,Which protocol is primarily used for secure communications over the Internet?,HTTP,FTP,HTTPS,Telnet,C
+7,What is the time complexity of searching in a balanced Binary Search Tree?,O(1),O(n),O(log n),O(n log n),C
+8,Which language runtime does Node.js utilize for executing JavaScript code?,SpiderMonkey,V8 Engine,JavaScriptCore,Chakra,B
+9,"In relational databases, which SQL command is used to remove all records from a table without logging individual row deletions?",DELETE,REMOVE,TRUNCATE,DROP,C
+10,What is the default port commonly used for local Express.js development servers?,80,443,5000,8080,C

@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to verify user authentication
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if the current user is an administrator
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.role == 'admin' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+    
+    // Helper function to check if user is accessing their own document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // USERS COLLECTION
+    match /users/{userId} {
+      // User can read their own profile, admin can read any profile
+      allow read: if isOwner(userId) || isAdmin();
+      // User can create their initial profile upon registration
+      allow create: if isOwner(userId) && request.resource.data.role == 'student';
+      // User can update their own profile fields but CANNOT alter their role
+      allow update: if isOwner(userId) && request.resource.data.role == resource.data.role;
+      // Administrator can do any modification
+      allow write: if isAdmin();
+    }
+
+    // EXAMS COLLECTION
+    match /exams/{examId} {
+      // Students can only read published exams
+      allow read: if isAuthenticated() && (isAdmin() || resource.data.status == 'published');
+      // Only administrators can create, modify, or delete exams
+      allow write: if isAdmin();
+    }
+
+    // QUESTIONS COLLECTION
+    match /questions/{questionId} {
+      // Administrators have full access
+      allow read, write: if isAdmin();
+      // Students CANNOT read questions directly from client SDK (must go through Node.js API to shield correctAnswer)
+      allow read, write: if false;
+    }
+
+    // ATTEMPTS COLLECTION
+    match /attempts/{attemptId} {
+      // Student can read their own attempt, admin can read all
+      allow read: if isAuthenticated() && (resource.data.studentId == request.auth.uid || isAdmin());
+      // Direct student creation from client SDK is restricted (managed via verified backend)
+      allow write: if isAdmin();
+    }
+
+    // RESULTS COLLECTION
+    match /results/{resultId} {
+      // Student can read their own result, admin can read all
+      allow read: if isAuthenticated() && (resource.data.studentId == request.auth.uid || isAdmin());
+      // Results are strictly written and graded by the backend service
+      allow write: if isAdmin();
+    }
+  }
+}
